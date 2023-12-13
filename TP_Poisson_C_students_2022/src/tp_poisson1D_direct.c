@@ -18,7 +18,7 @@ int main(int argc,char *argv[])
   int info;
   int NRHS;
   double T0, T1;
-  double *RHS, *EX_SOL, *X;
+  double *RHS, *EX_SOL, *X, *Y;
   double **AAB;
   double *AB;
 
@@ -34,6 +34,7 @@ int main(int argc,char *argv[])
   RHS=(double *) malloc(sizeof(double)*la);
   EX_SOL=(double *) malloc(sizeof(double)*la);
   X=(double *) malloc(sizeof(double)*la);
+  Y=(double *) malloc(sizeof(double)*lab);
 
   // TODO : you have to implement those functions
   set_grid_points_1D(X, &la);
@@ -52,6 +53,14 @@ int main(int argc,char *argv[])
   AB = (double *) malloc(sizeof(double)*lab*la);
 
   set_GB_operator_colMajor_poisson1D(AB, &lab, &la, &kv);
+
+  // BLAS dgbmv avec AB
+  double alpha = 1;
+  double beta = 0;
+  int incx = 1;
+  int incy = 1;
+  int lda = lab;
+  dgbmv("N", lab, la, kl, ku, alpha, AB, lda, X, incx, beta, Y, incy);
 
   // write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "AB.dat");
 
