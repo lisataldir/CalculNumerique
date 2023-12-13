@@ -34,7 +34,6 @@ int main(int argc,char *argv[])
   RHS=(double *) malloc(sizeof(double)*la);
   EX_SOL=(double *) malloc(sizeof(double)*la);
   X=(double *) malloc(sizeof(double)*la);
-  Y=(double *) malloc(sizeof(double)*lab);
 
   // TODO : you have to implement those functions
   set_grid_points_1D(X, &la);
@@ -53,27 +52,6 @@ int main(int argc,char *argv[])
   AB = (double *) malloc(sizeof(double)*lab*la);
 
   set_GB_operator_colMajor_poisson1D(AB, &lab, &la, &kv);
-
-  // BLAS dgbmv avec AB
-  double alpha = 1;
-  double beta = 0;
-  int incx = 1;
-  int incy = 1;
-  int lda = lab;
-
-  // Méthode de validation
-  dgbmv("N", lab, la, kl, ku, alpha, AB, lda, X, incx, beta, Y, incy);
-
-  // On choisit X = {1, 1,...} et on vérifie que Y = {0, 0, ...}
-  for (int i=0; i < la; i++){
-    X[i] = 1.;
-  }
-
-  for (int i=0; i < lab; i++){
-    if (Y[i] != 0) printf("Erreur");
-  }
-
-  
 
   // write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "AB.dat");
 
