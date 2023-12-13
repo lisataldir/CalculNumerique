@@ -60,7 +60,20 @@ int main(int argc,char *argv[])
   int incx = 1;
   int incy = 1;
   int lda = lab;
+
+  // Méthode de validation
   dgbmv("N", lab, la, kl, ku, alpha, AB, lda, X, incx, beta, Y, incy);
+
+  // On choisit X = {1, 1,...} et on vérifie que Y = {0, 0, ...}
+  for (int i=0; i < la; i++){
+    X[i] = 1.;
+  }
+
+  for (int i=0; i < lab; i++){
+    if (Y[i] != 0) printf("Erreur");
+  }
+
+  
 
   // write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "AB.dat");
 
