@@ -8,8 +8,8 @@
 void set_GB_operator_colMajor_poisson1D(double* AB, int *lab, int *la, int *kv){
     for (int i = 0; i < *la; i++) {
         AB[(*kv) + 1 + i*(*lab)] = 2.0;
-        AB[(*kv) + i*(*lab)] = -1.0;
-        AB[(*kv) + 2 + i*(*lab)] = -1.0;
+        if (i != 0) AB[(*kv) + i*(*lab)] = -1.0;
+        if (i != (*la) - 1) AB[(*kv) + 2 + i*(*lab)] = -1.0;
     }
 }
 
