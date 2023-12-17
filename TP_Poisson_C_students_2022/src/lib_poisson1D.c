@@ -6,12 +6,11 @@
 #include "lib_poisson1D.h"
 
 void set_GB_operator_colMajor_poisson1D(double* AB, int *lab, int *la, int *kv){
-  for (int j=0; j < *la ; j++){
-    for (int i=0; i < *lab ; i++) {
-      if (i==j) AB[j*(*lab)+i] = 2.;
-      if ( (i-j) == -1 || (i-j) == 1) AB[j*(*lab)+i] = -1.;
+    for (int i = 0; i < *la; i++) {
+        AB[(*kv) + 1 + i*(*lab)] = 2.0;
+        AB[(*kv) + i*(*lab)] = -1.0;
+        AB[(*kv) + 2 + i*(*lab)] = -1.0;
     }
-  }
 }
 
 void set_GB_operator_colMajor_poisson1D_Id(double* AB, int *lab, int *la, int *kv){
@@ -46,7 +45,7 @@ void write_GB_operator_rowMajor_poisson1D(double* AB, int* lab, int* la, char* f
   if (file != NULL){
     for (ii=0;ii<(*lab);ii++){
       for (jj=0;jj<(*la);jj++){
-	fprintf(file,"%lf\t",AB[ii*(*la)+jj]);
+	      fprintf(file,"%lf\t",AB[ii*(*la)+jj]);
       }
       fprintf(file,"\n");
     }
