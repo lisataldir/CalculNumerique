@@ -59,16 +59,16 @@ int main(int argc,char *argv[])
   /* LU Factorization */
   info=0;
   ipiv = (int *) calloc(la, sizeof(int));
-  //dgbtrf_(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+  dgbtrf_(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
 
   /* LU for tridiagonal matrix  (can replace dgbtrf_) */
-  // ierr = dgbtrftridiag(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+  ierr = dgbtrftridiag(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
 
-  // write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "LU.dat");
+  write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "LU.dat");
   
   /* Solution (Triangular) */
   if (info==0){
-    //dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+    dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info, 0);
     if (info!=0){printf("\n INFO DGBTRS = %d\n",info);}
   }else{
     printf("\n INFO = %d\n",info);
@@ -76,6 +76,7 @@ int main(int argc,char *argv[])
 
   /* It can also be solved with dgbsv */
   // TODO : use dgbsv
+    dgbsv_("N", &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
 
   write_xy(RHS, X, &la, "SOL.dat");
 
