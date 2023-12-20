@@ -28,17 +28,33 @@ double richardson_alpha_opt(int *la){
   return 2.0/(eigmax_poisson1D(la) + eigmin_poisson1D(la));
 }
 
+// Formule : x = x + alpha*(b-A*x)
 void richardson_alpha(double *AB, double *RHS, double *X, double *alpha_rich, int *lab, int *la,int *ku, int*kl, double *tol, int *maxit, double *resvec, int *nbite){
 
-    double normb = 1.0/dnrm2_(*la, RHS, 1);
-    dgbmv_("N", la, lab, kl, ku, alpha_rich, AB, lab, X, 1, -1, RHS, 1);
-    resvec[*nbite] = dnrm2_(*la, RHS, 1)/normb;
+    double* b = (double*)malloc(sizeof(double)*(*la));
+    double normb = 1.0/cblas_dnrm2(*la, RHS, 1);
+    cblas_dcopy(*la, RHS, 1, b, 1);
+
+    // b = beta*b + alpha*A*x, ici on calcule b - A*x
+    cblas_dgbmv(CblasColMajor, CblasConjNoTrans, *la, *la, *kl, *ku, -1.0, AB, *lab, X, 1, 1.0, b, 1);
+
+    // Calcul du résidu
+    resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
 
     while(*nbite < (*maxit) && resvec[*nbite] > (*tol)){
-        X = X + dgbmv_("N", la, lab, kl, ku, alpha_rich, AB, lab, X, 1, -1, RHS, 1);
-        *nbite++;
-        resvec[*nbite] = dnrm2_(*la, RHS, 1)/normb;
+      // y = alpha*x + y, ici x vaut b - A*x et a été stocké dans b (ligne 40)
+      cblas_daxpy(*la, *alpha_rich, b, 1, X, 1);
+      cblas_dcopy(*la, RHS, 1, b, 1);
+
+      // étape suivante
+      cblas_dgbmv(CblasColMajor, CblasConjNoTrans, *la, *la, *kl, *ku, -1, AB, *lab, X, 1, 1, b, 1);
+
+      *nbite = *nbite + 1;
+      resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
+      printf("%d\n", *nbite);
     }
+
+    free(b);
 }
 
 void extract_MB_jacobi_tridiag(double *AB, double *MB, int *lab, int *la,int *ku, int*kl, int *kv){
