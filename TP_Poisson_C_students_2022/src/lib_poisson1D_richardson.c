@@ -30,17 +30,15 @@ double richardson_alpha_opt(int *la){
 
 void richardson_alpha(double *AB, double *RHS, double *X, double *alpha_rich, int *lab, int *la,int *ku, int*kl, double *tol, int *maxit, double *resvec, int *nbite){
 
-    /*
-    double normb = 1.0;
-    resvec[*nbite] = 1/normb;
+    double normb = 1.0/dnrm2_(*la, RHS, 1);
+    dgbmv_("N", la, lab, kl, ku, alpha_rich, AB, lab, X, 1, -1, RHS, 1);
+    resvec[*nbite] = dnrm2_(*la, RHS, 1)/normb;
+
     while(*nbite < (*maxit) && resvec[*nbite] > (*tol)){
-        double* tmp = (double *) malloc(sizeof(double)*(*la));
-        *tmp = *X + (dgbmv_("N", la, lab, kl, ku, alpha_rich, AB, lab, X, 1, -1, RHS, 1));
+        X = X + dgbmv_("N", la, lab, kl, ku, alpha_rich, AB, lab, X, 1, -1, RHS, 1);
         *nbite++;
-        resvec[*nbite] = relative_forward_error(tmp, X, la);
-        *X = *tmp;
+        resvec[*nbite] = dnrm2_(*la, RHS, 1)/normb;
     }
-    */
 }
 
 void extract_MB_jacobi_tridiag(double *AB, double *MB, int *lab, int *la,int *ku, int*kl, int *kv){
