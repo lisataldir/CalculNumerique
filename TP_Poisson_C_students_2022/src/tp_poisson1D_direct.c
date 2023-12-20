@@ -76,7 +76,7 @@ int main(int argc,char *argv[])
 
   /* It can also be solved with dgbsv */
   // TODO : use dgbsv
-    dgbsv_("N", &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+  // dgbsv_(&lab, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
 
   write_xy(RHS, X, &la, "SOL.dat");
 
