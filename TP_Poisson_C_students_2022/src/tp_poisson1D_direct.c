@@ -20,7 +20,7 @@ int main(int argc,char *argv[])
   double T0, T1;
   double *RHS, *EX_SOL, *X, *Y;
   double **AAB;
-  double *AB, *Id;
+  double *AB;
 
   double temp, relres;
 
@@ -90,6 +90,5 @@ int main(int argc,char *argv[])
   free(EX_SOL);
   free(X);
   free(AB);
-  free(Id);
   printf("\n\n--------- End -----------\n");
 }
