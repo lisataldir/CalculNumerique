@@ -17,6 +17,7 @@ void set_GB_operator_colMajor_poisson1D_Id(double* AB, int *lab, int *la, int *k
   for (int i = 0; i < *la; i++) AB[(*kv) + 1 + i*(*lab)] = 1.0;
 }
 
+
 void set_dense_RHS_DBC_1D(double* RHS, int* la, double* BC0, double* BC1){
   RHS[0] = *BC0;
   for (int i=1; i < *la - 1; i++){
@@ -36,9 +37,18 @@ void set_grid_points_1D(double* x, int* la){
   }
 }
 
-// ici implémenter erreur cblas_dnrm2(la, x, 1)
 double relative_forward_error(double* x, double* y, int* la){
-  return 0;
+  double* A = (double*)malloc(sizeof(double)* (*la));
+  int kv = 1;
+    
+  set_GB_operator_colMajor_poisson1D_Id(A, &kv, la, &kv);
+  cblas_dgbmv(CblasColMajor, CblasNoTrans, *la, *la, 0, 0, -1.0, A, kv, x, 1, 1.0, y, 1);
+    
+  double norm_res = cblas_dnrm2(*la, y, 1); 
+  double norm_x = cblas_dnrm2(*la, x, 1);       
+  free(A);
+
+  return norm_res/norm_x; 
 }
 
 int indexABCol(int i, int j, int *lab){

@@ -20,7 +20,7 @@ int main(int argc,char *argv[])
   double T0, T1;
   double *RHS, *EX_SOL, *X, *Y;
   double **AAB;
-  double *AB;
+  double *AB, *Id;
 
   double temp, relres;
 
@@ -82,7 +82,7 @@ int main(int argc,char *argv[])
 
   /* Relative forward error */
   // TODO : Compute relative norm of the residual
-  // double err = relative_forward_error(RHS, EX_SOL, &la)
+  relres = relative_forward_error(EX_SOL, RHS, &la);
   
   printf("\nThe relative forward error is relres = %e\n",relres);
 
@@ -90,5 +90,6 @@ int main(int argc,char *argv[])
   free(EX_SOL);
   free(X);
   free(AB);
+  free(Id);
   printf("\n\n--------- End -----------\n");
 }

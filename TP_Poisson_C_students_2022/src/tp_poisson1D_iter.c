@@ -78,7 +78,7 @@ int main(int argc,char *argv[])
 
   /* Computation of optimum alpha */
   opt_alpha = richardson_alpha_opt(&la);
-  printf("Optimal alpha for simple Richardson iteration is : %lf",opt_alpha); 
+  printf("Optimal alpha for simple Richardson iteration is : %lf\n",opt_alpha); 
 
   /* Solve */
   double tol=1e-3;

@@ -42,7 +42,7 @@ void richardson_alpha(double *AB, double *RHS, double *X, double *alpha_rich, in
     resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
 
     while(*nbite < (*maxit) && resvec[*nbite] > (*tol)){
-      // y = alpha*x + y, ici x vaut b - A*x et a été stocké dans b (ligne 40)
+      // y = alpha*x + y, ici x vaut b - A*x et a été stocké dans b (ligne 39)
       cblas_daxpy(*la, *alpha_rich, b, 1, X, 1);
       cblas_dcopy(*la, RHS, 1, b, 1);
 
