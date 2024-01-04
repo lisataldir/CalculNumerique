@@ -36,6 +36,7 @@ void set_grid_points_1D(double* x, int* la){
   }
 }
 
+// ici implémenter erreur cblas_dnrm2(la, x, 1)
 double relative_forward_error(double* x, double* y, int* la){
   return 0;
 }

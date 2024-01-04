@@ -55,6 +55,7 @@ int main(int argc,char *argv[])
 
   write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "AB.dat");
 
+  // Méthode 1 : dgbtrf + gdbtrs
   printf("Solution with LAPACK\n");
   /* LU Factorization */
   info=0;
@@ -74,14 +75,14 @@ int main(int argc,char *argv[])
     printf("\n INFO = %d\n",info);
   }
 
-  /* It can also be solved with dgbsv */
-  // TODO : use dgbsv
+  // Méthode 2 : dgbsv
   // dgbsv_(&lab, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
 
   write_xy(RHS, X, &la, "SOL.dat");
 
   /* Relative forward error */
   // TODO : Compute relative norm of the residual
+  // double err = relative_forward_error(RHS, EX_SOL, &la)
   
   printf("\nThe relative forward error is relres = %e\n",relres);
 

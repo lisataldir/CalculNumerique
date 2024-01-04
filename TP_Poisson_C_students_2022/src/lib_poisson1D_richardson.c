@@ -36,7 +36,7 @@ void richardson_alpha(double *AB, double *RHS, double *X, double *alpha_rich, in
     cblas_dcopy(*la, RHS, 1, b, 1);
 
     // b = beta*b + alpha*A*x, ici on calcule b - A*x
-    cblas_dgbmv(CblasColMajor, CblasConjNoTrans, *la, *la, *kl, *ku, -1.0, AB, *lab, X, 1, 1.0, b, 1);
+    cblas_dgbmv(CblasColMajor, CblasNoTrans, *la, *la, *kl, *ku, -1.0, AB, *lab, X, 1, 1.0, b, 1);
 
     // Calcul du résidu
     resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
@@ -47,7 +47,7 @@ void richardson_alpha(double *AB, double *RHS, double *X, double *alpha_rich, in
       cblas_dcopy(*la, RHS, 1, b, 1);
 
       // étape suivante
-      cblas_dgbmv(CblasColMajor, CblasConjNoTrans, *la, *la, *kl, *ku, -1, AB, *lab, X, 1, 1, b, 1);
+      cblas_dgbmv(CblasColMajor, CblasNoTrans, *la, *la, *kl, *ku, -1, AB, *lab, X, 1, 1, b, 1);
 
       *nbite = *nbite + 1;
       resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
