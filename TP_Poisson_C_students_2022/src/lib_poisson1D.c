@@ -60,3 +60,29 @@ int indexABCol(int i, int j, int *lab){
 int dgbtrftridiag(int *la, int*n, int *kl, int *ku, double *AB, int *lab, int *ipiv, int *info){
   return *info;
 }
+
+void set_GB_operator_LU(double* AB, int *lab, int *la, int *kv){
+    for (int i = 0; i < *la; i++) {
+        for (int j = 0; j < *lab; j++){
+
+        }
+    }
+}
+
+/*
+function [L, U] = mylu3b(A)
+    n = size(A)(1)
+    for k = 1:n-1
+        for i = k+1:n
+            A(i,k) = A(i,k)/A(k,k);
+        end
+        for i = k+1:n
+            for j=k+1:n
+                A(i,j)=A(i,j)-A(i,k)*A(k,j);
+            end
+        end
+    end
+    L = tril(A, -1) + eye(n, n);
+    U = triu(A);
+endfunction
+*/
