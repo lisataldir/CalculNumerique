@@ -55,16 +55,6 @@ double relative_forward_error(double* x, double* y, int* la){
   double norm_x = cblas_dnrm2(*la, x, 1);       
   free(A);
 
-  for(int i=0; i < *la; i++){
-    printf("%lf ", x[i]);
-  }
-  printf("\n");
-
-  for(int i=0; i < *la; i++){
-    printf("%lf ", y[i]);
-  }
-  printf("\n");
-
   return norm_res/norm_x; 
 }
 
@@ -74,7 +64,6 @@ int indexABCol(int i, int j, int *lab){
 
 int dgbtrftridiag(int *la, int*n, int *kl, int *ku, double *AB, int *lab, int *ipiv, int *info){
 
-  AB[(*kl) + 1] = 2.0;
   AB[(*kl) + 2] = AB[(*kl) + 2]/AB[(*kl) + 1];
   ipiv[0] = 1;
 
