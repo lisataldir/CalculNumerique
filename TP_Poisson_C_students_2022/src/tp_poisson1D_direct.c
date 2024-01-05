@@ -76,9 +76,10 @@ int main(int argc,char *argv[])
   /* LU for tridiagonal matrix  (can replace dgbtrf_) */
   if (IMPLEM == TRI) {
     dgbtrftridiag(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+    printf("%d\n", info);
   }
 
-  if (IMPLEM == TRI || IMPLEM == TRF){
+   if (IMPLEM == TRI || IMPLEM == TRF){
     /* Solution (Triangular) */
     if (info==0){
       dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
@@ -90,7 +91,7 @@ int main(int argc,char *argv[])
 
   /* It can also be solved with dgbsv */
   if (IMPLEM == SV) {
-    dgbsv_(&lab, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+    dgbsv_(&la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
   }
 
   write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "LU.dat");

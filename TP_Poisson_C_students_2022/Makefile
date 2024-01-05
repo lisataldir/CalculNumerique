@@ -44,17 +44,20 @@ OBJENV= tp_env.o
 OBJLIBPOISSON= lib_poisson1D$(SOL).o lib_poisson1D_writers.o lib_poisson1D_richardson$(SOL).o
 OBJTP2ITER= $(OBJLIBPOISSON) tp_poisson1D_iter.o
 OBJTP2DIRECT= $(OBJLIBPOISSON) tp_poisson1D_direct.o
+OBJTP3DIRECT= $(OBJLIBPOISSON) tp_poisson1D_perf.o
 #
 .PHONY: all
 
-all: bin/tp_testenv bin/tpPoisson1D_iter bin/tpPoisson1D_direct
-run: run_testenv run_tpPoisson1D_iter run_tpPoisson1D_direct
+all: bin/tp_testenv bin/tpPoisson1D_iter bin/tpPoisson1D_direct bin/tpPoisson1D_perf
+run: run_testenv run_tpPoisson1D_iter run_tpPoisson1D_direct run_tpPoisson1D_perf
 
 testenv: bin/tp_testenv
 
 tpPoisson1D_iter: bin/tpPoisson1D_iter
 
 tpPoisson1D_direct: bin/tpPoisson1D_direct
+
+tpPoisson1D_perf: bin/tpPoisson1D_perf
 
 %.o : $(TPDIRSRC)/%.c
 	$(CC) $(OPTC) -c $(INCL) $<
@@ -68,6 +71,9 @@ bin/tpPoisson1D_iter: $(OBJTP2ITER)
 bin/tpPoisson1D_direct: $(OBJTP2DIRECT)
 	$(CC) -o bin/tpPoisson1D_direct $(OPTC) $(OBJTP2DIRECT) $(LIBS) -g
 
+bin/tpPoisson1D_perf: $(OBJTP3DIRECT)
+	$(CC) -o bin/tpPoisson1D_perf $(OPTC) $(OBJTP3DIRECT) $(LIBS) -g
+
 run_testenv:
 	bin/tp_testenv
 
@@ -80,6 +86,11 @@ run_tpPoisson1D_direct:
 	bin/tpPoisson1D_direct
 	bin/tpPoisson1D_direct 1
 	bin/tpPoisson1D_direct 2
+
+run_tpPoisson1D_perf:
+	bin/tpPoisson1D_perf
+	bin/tpPoisson1D_perf 1
+	bin/tpPoisson1D_perf 2
 
 clean:
 	rm *.o bin/*

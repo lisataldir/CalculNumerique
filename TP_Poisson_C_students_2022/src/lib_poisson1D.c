@@ -44,11 +44,26 @@ double relative_forward_error(double* x, double* y, int* la){
   set_GB_operator_colMajor_poisson1D_Id(A, &lab, la, &kv);
   A[0] = 1.0;
 
+  for(int i=0; i < *la; i++){
+    printf("%lf ", y[i]);
+  }
+  printf("\n");
+
   cblas_dgbmv(CblasColMajor, CblasNoTrans, *la, *la, 0, 0, -1.0, A, lab, x, 1, 1.0, y, 1);
   
   double norm_res = cblas_dnrm2(*la, y, 1); 
   double norm_x = cblas_dnrm2(*la, x, 1);       
   free(A);
+
+  for(int i=0; i < *la; i++){
+    printf("%lf ", x[i]);
+  }
+  printf("\n");
+
+  for(int i=0; i < *la; i++){
+    printf("%lf ", y[i]);
+  }
+  printf("\n");
 
   return norm_res/norm_x; 
 }
@@ -58,31 +73,16 @@ int indexABCol(int i, int j, int *lab){
 }
 
 int dgbtrftridiag(int *la, int*n, int *kl, int *ku, double *AB, int *lab, int *ipiv, int *info){
+
+  AB[(*kl) + 1] = 2.0;
+  AB[(*kl) + 2] = AB[(*kl) + 2]/AB[(*kl) + 1];
+  ipiv[0] = 1;
+
+  for (int i = 1; i < *la; i++) {
+    AB[(*kl) + 1 + i*(*lab)] = AB[(*kl) + 1 + i*(*lab)] - AB[(*kl) + i*(*lab)]*AB[(*kl) + 2 + (i-1)*(*lab)] ;
+    if (i != (*la) - 1) AB[(*kl) + 2 + i*(*lab)] = AB[(*kl) + 2 + i*(*lab)] / AB[(*kl) + 1 + i*(*lab)];
+     ipiv[i] = i + 1;
+  }
+  *info = 0;
   return *info;
 }
-
-void set_GB_operator_LU(double* AB, int *lab, int *la, int *kv){
-    for (int i = 0; i < *la; i++) {
-        for (int j = 0; j < *lab; j++){
-
-        }
-    }
-}
-
-/*
-function [L, U] = mylu3b(A)
-    n = size(A)(1)
-    for k = 1:n-1
-        for i = k+1:n
-            A(i,k) = A(i,k)/A(k,k);
-        end
-        for i = k+1:n
-            for j=k+1:n
-                A(i,j)=A(i,j)-A(i,k)*A(k,j);
-            end
-        end
-    end
-    L = tril(A, -1) + eye(n, n);
-    U = triu(A);
-endfunction
-*/
