@@ -44,11 +44,6 @@ double relative_forward_error(double* x, double* y, int* la){
   set_GB_operator_colMajor_poisson1D_Id(A, &lab, la, &kv);
   A[0] = 1.0;
 
-  for(int i=0; i < *la; i++){
-    printf("%lf ", y[i]);
-  }
-  printf("\n");
-
   cblas_dgbmv(CblasColMajor, CblasNoTrans, *la, *la, 0, 0, -1.0, A, lab, x, 1, 1.0, y, 1);
   
   double norm_res = cblas_dnrm2(*la, y, 1); 
