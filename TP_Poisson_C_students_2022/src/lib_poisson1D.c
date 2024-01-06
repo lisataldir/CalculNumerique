@@ -7,11 +7,15 @@
 
 void set_GB_operator_colMajor_poisson1D(double* AB, int *lab, int *la, int *kv){
     for (int i = 0; i < *la; i++) {
+        /* diagonale */
         AB[(*kv) + 1 + i*(*lab)] = 2.0;
+        /* sous-diagonale */
         if (i != 0) AB[(*kv) + i*(*lab)] = -1.0;
+        /* sur-diagonale */
         if (i != (*la) - 1) AB[(*kv) + 2 + i*(*lab)] = -1.0;
     }
 }
+
 
 void set_GB_operator_colMajor_poisson1D_Id(double* AB, int *lab, int *la, int *kv){
   for (int i = 0; i < *la; i++) AB[(*kv) + 1 + i*(*lab)] = 1.0;
