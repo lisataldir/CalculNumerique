@@ -60,38 +60,34 @@ int main(int argc,char *argv[])
 
   	ipiv = (int *) calloc(la, sizeof(int));
 
-	/* Mesure de performance */
-	clock_t begin, end;
+	  /* Mesure de performance */
+	  clock_t begin, end;
 
   	/* LU Factorization */
   	if (IMPLEM == TRF) {
-		begin = (double)clock();
+		  begin = (double)clock();
     	dgbtrf_(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+      dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+      end = (double)clock();
+      time[n-6] = (end-begin)*1000.0/CLOCKS_PER_SEC;
   	}
 
   	/* LU for tridiagonal matrix  (can replace dgbtrf_) */
   	if (IMPLEM == TRI) {
-		begin = (double)clock();
+		  begin = (double)clock();
     	dgbtrftridiag(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
-  	}
-
-  	if (IMPLEM == TRI || IMPLEM == TRF){
-    	/* Solution (Triangular) */
-    	if (info==0){
-      		dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
-			end = (double)clock();
-			time[n-6] = (end-begin)*100000000.0/CLOCKS_PER_SEC;
-    	}
+      dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+      end = (double)clock();
+      time[n-6] = (end-begin)*1000.0/CLOCKS_PER_SEC;
   	}
 
   	/* It can also be solved with dgbsv */
   	if (IMPLEM == SV) {
-		begin = (double)clock();
+		  begin = (double)clock();
     	dgbsv_(&lab, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
-		end = (double)clock();
-		time[n-6] = (double)(end-begin)*1000.0/CLOCKS_PER_SEC;
+		  end = (double)clock();
+		  time[n-6] = (double)(end-begin)*1000.0/CLOCKS_PER_SEC;
   	}
-
   	free(RHS);
   	free(EX_SOL);
   	free(X);
