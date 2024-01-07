@@ -66,13 +66,13 @@ bin/tp_testenv: $(OBJENV)
 	$(CC) -o bin/tp_testenv $(OPTC) $(OBJENV) $(LIBS) -g
 
 bin/tpPoisson1D_iter: $(OBJTP2ITER)
-	$(CC) -o bin/tpPoisson1D_iter $(OPTC) $(OBJTP2ITER) $(LIBS) -g
+	$(CC) -o bin/tpPoisson1D_iter $(OPTC) $(OBJTP2ITER) $(LIBS) -llapacke -g
 
 bin/tpPoisson1D_direct: $(OBJTP2DIRECT)
-	$(CC) -o bin/tpPoisson1D_direct $(OPTC) $(OBJTP2DIRECT) $(LIBS) -g
+	$(CC) -o bin/tpPoisson1D_direct $(OPTC) $(OBJTP2DIRECT) $(LIBS) -llapacke -g
 
 bin/tpPoisson1D_perf: $(OBJTP3DIRECT)
-	$(CC) -o bin/tpPoisson1D_perf $(OPTC) $(OBJTP3DIRECT) $(LIBS) -g
+	$(CC) -o bin/tpPoisson1D_perf $(OPTC) $(OBJTP3DIRECT) $(LIBS) -llapacke -g
 
 run_testenv:
 	bin/tp_testenv

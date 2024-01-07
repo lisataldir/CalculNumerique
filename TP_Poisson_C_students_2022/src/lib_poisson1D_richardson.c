@@ -41,7 +41,7 @@ void richardson_alpha(double *AB, double *RHS, double *X, double *alpha_rich, in
     resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
 
     while(*nbite < (*maxit) && resvec[*nbite] > (*tol)){
-      // y = alpha*x + y, ici x vaut b - A*x et a été stocké dans b (ligne 39)
+      // y = alpha*x + y, ici x vaut b - A*x et a été stocké dans b
       cblas_daxpy(*la, *alpha_rich, b, 1, X, 1);
       cblas_dcopy(*la, RHS, 1, b, 1);
 
@@ -58,15 +58,15 @@ void richardson_alpha(double *AB, double *RHS, double *X, double *alpha_rich, in
 // MB = D où D est la diagonale de AB
 void extract_MB_jacobi_tridiag(double *AB, double *MB, int *lab, int *la,int *ku, int*kl, int *kv){
   for(int i=0; i < *la; i++){
-    MB[(*kv) + i*(*lab)] = AB[(*kv) + i*(*lab)];
+    MB[(*kv) + 1 + i*(*lab)] = AB[(*kv) + 1 + i*(*lab)];
   }
 }
 
 // MB = D-E où D est la diagonale de AB et E la sous diagonale
 void extract_MB_gauss_seidel_tridiag(double *AB, double *MB, int *lab, int *la,int *ku, int*kl, int *kv){
   for(int i=0; i < *la; i++){
-    MB[(*kv) + 2 + i*(*lab)] = AB[(*kv) + 2 + i*(*lab)];
     MB[(*kv) + i*(*lab)] = AB[(*kv) + i*(*lab)];
+    MB[(*kv) + 1 + i*(*lab)] = AB[(*kv) + 1 + i*(*lab)];
   }
 }
 
@@ -75,11 +75,11 @@ void richardson_MB(double *AB, double *RHS, double *X, double *MB, int *lab, int
 
     int info = 1;
     int NRHS = 1;
-    int* ipiv = (int*)malloc(sizeof(int*)*(*la));
+    int* ipiv = (int*)malloc(sizeof(int)*(*la));
+    int ku_mb = 0;
 
     double* b = (double*)malloc(sizeof(double)*(*la));
     double normb = 1.0/cblas_dnrm2(*la, RHS, 1);
-
     // b = RHS 
     cblas_dcopy(*la, RHS, 1, b, 1);
 
@@ -90,17 +90,17 @@ void richardson_MB(double *AB, double *RHS, double *X, double *MB, int *lab, int
     resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
 
     while(*nbite < (*maxit) && resvec[*nbite] > (*tol)){
-      // y = M^{-1}*x + y, ici x vaut b - A*x et a été stocké dans b 
-      dgbsv_(lab, kl, ku, &NRHS, MB, la, ipiv, b, lab, &info);
+      // b = M^{-1}*b
+      dgbsv_(la, kl, &ku_mb, &NRHS, MB, lab, ipiv, b, la, &info);
+      // x = b + x
+      cblas_daxpy(*la, 1, b, 1, X, 1);
       cblas_dcopy(*la, RHS, 1, b, 1);
 
-      // étape suivante (b = b - A*x)
+      // étape suivante
       cblas_dgbmv(CblasColMajor, CblasNoTrans, *la, *la, *kl, *ku, -1.0, AB, *lab, X, 1, 1.0, b, 1);
-
       *nbite = *nbite + 1;
       resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
     }
-    write_vec((double*)ipiv, la, "ipiv.dat");
     printf("Nombre d'itérations : %d\n", *nbite);
     free(b);
     free(ipiv);

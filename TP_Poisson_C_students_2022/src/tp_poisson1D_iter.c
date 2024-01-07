@@ -96,10 +96,12 @@ int main(int argc,char *argv[])
   /* Richardson General Tridiag */
 
   /* get MB (:=M, D for Jacobi, (D-E) for Gauss-seidel) */
-  kv = 1;
+  kv = 0;
   ku = 1;
   kl = 1;
+
   MB = (double *) malloc(sizeof(double)*(lab)*la);
+
   if (IMPLEM == JAC) {
     extract_MB_jacobi_tridiag(AB, MB, &lab, &la, &ku, &kl, &kv);
   } else if (IMPLEM == GS) {
