@@ -65,7 +65,7 @@ void extract_MB_jacobi_tridiag(double *AB, double *MB, int *lab, int *la,int *ku
 // MB = D-E où D est la diagonale de AB et E la sous diagonale
 void extract_MB_gauss_seidel_tridiag(double *AB, double *MB, int *lab, int *la,int *ku, int*kl, int *kv){
   for(int i=0; i < *la; i++){
-    MB[(*kv) + i*(*lab)] = AB[(*kv) + i*(*lab)];
+    MB[(*kv) + 2 + i*(*lab)] = AB[(*kv) + 2 + i*(*lab)];
     MB[(*kv) + 1 + i*(*lab)] = AB[(*kv) + 1 + i*(*lab)];
   }
 }
@@ -89,9 +89,11 @@ void richardson_MB(double *AB, double *RHS, double *X, double *MB, int *lab, int
     // Calcul du résidu
     resvec[*nbite] = cblas_dnrm2(*la, b, 1)*normb;
 
+    dgbtrf_(la, la, kl, &ku_mb, MB, lab, ipiv, &info);
+
     while(*nbite < (*maxit) && resvec[*nbite] > (*tol)){
       // b = M^{-1}*b
-      dgbsv_(la, kl, &ku_mb, &NRHS, MB, lab, ipiv, b, la, &info);
+      dgbtrs_("N", la, kl, &ku_mb, &NRHS, MB, lab, ipiv, b, la, &info);
       // x = b + x
       cblas_daxpy(*la, 1, b, 1, X, 1);
       cblas_dcopy(*la, RHS, 1, b, 1);

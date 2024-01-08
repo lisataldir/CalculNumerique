@@ -112,6 +112,7 @@ int main(int argc,char *argv[])
   if (IMPLEM == JAC || IMPLEM == GS) {
     write_GB_operator_colMajor_poisson1D(MB, &lab, &la, "MB.dat");
     richardson_MB(AB, RHS, SOL, MB, &lab, &la, &ku, &kl, &tol, &maxit, resvec, &nbite);
+    write_GB_operator_colMajor_poisson1D(MB, &lab, &la, "LU.dat");
   }
 
   /* Write solution */
