@@ -4,6 +4,7 @@
 /* to solve the Poisson 1D problem        */
 /******************************************/
 #include "lib_poisson1D.h"
+#include <time.h>
 
 #define ALPHA 0
 #define JAC 1
@@ -29,6 +30,9 @@ int main(int argc,char *argv[])
   double temp, relres;
 
   double opt_alpha;
+
+  double time;
+  clock_t begin, end;
 
   if (argc == 2) {
     IMPLEM = atoi(argv[1]);
@@ -90,7 +94,11 @@ int main(int argc,char *argv[])
 
   /* Solve with Richardson alpha */
   if (IMPLEM == ALPHA) {
+    begin = (double)clock();
     richardson_alpha(AB, RHS, SOL, &opt_alpha, &lab, &la, &ku, &kl, &tol, &maxit, resvec, &nbite);
+    end = (double)clock();
+    time = (end-begin)*1000.0/CLOCKS_PER_SEC;
+    printf("Temps d'exécution richardson alpha : %lf ms \n", time);
   }
 
   /* Richardson General Tridiag */
@@ -103,15 +111,27 @@ int main(int argc,char *argv[])
   MB = (double *) malloc(sizeof(double)*(lab)*la);
 
   if (IMPLEM == JAC) {
+    begin = (double)clock();
     extract_MB_jacobi_tridiag(AB, MB, &lab, &la, &ku, &kl, &kv);
+    end = (double)clock();
+    time = (end-begin)*1000.0/CLOCKS_PER_SEC;
+    printf("Temps d'exécution MB Jacobi : %lf ms\n", time);
   } else if (IMPLEM == GS) {
+    begin = (double)clock();
     extract_MB_gauss_seidel_tridiag(AB, MB, &lab, &la, &ku, &kl, &kv);
+    end = (double)clock();
+    time = (end-begin)*1000.0/CLOCKS_PER_SEC;
+    printf("Temps d'exécution MB Gauss-Seidel: %lf ms\n", time);
   }
 
   /* Solve with General Richardson */
   if (IMPLEM == JAC || IMPLEM == GS) {
     write_GB_operator_colMajor_poisson1D(MB, &lab, &la, "MB.dat");
+    begin = (double)clock();
     richardson_MB(AB, RHS, SOL, MB, &lab, &la, &ku, &kl, &tol, &maxit, resvec, &nbite);
+    end = (double)clock();
+    time = (end-begin)*1000.0/CLOCKS_PER_SEC;
+    printf("Temps d'exécution : %lf ms\n", time);
     write_GB_operator_colMajor_poisson1D(MB, &lab, &la, "LU.dat");
   }
 

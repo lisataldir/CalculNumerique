@@ -4,6 +4,7 @@
 /* to solve the Poisson 1D problem        */
 /******************************************/
 #include "lib_poisson1D.h"
+#include <time.h>
 
 #define TRF 0
 #define TRI 1
@@ -65,6 +66,7 @@ int main(int argc,char *argv[])
   set_GB_operator_colMajor_poisson1D(AB, &lab, &la, &kv);
   write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "AB.dat");
 
+
   printf("Solution with LAPACK\n");
   ipiv = (int *) calloc(la, sizeof(int));
 
@@ -102,51 +104,6 @@ int main(int argc,char *argv[])
   
   printf("\nThe relative forward error is relres = %e\n",relres);
 
-  /* Test stockage */
-
-  /*
-  double* ABbis = (double *) malloc(sizeof(double) * la * la);
-  printf("%f", ABbis[0]);
-
-  for(int i=0; i < la; i++){
-    for(int j=0; j < la; j++){
-      if (i == j) ABbis[i*la + j] = 2.;
-      if (abs(j - i) == 1) ABbis[i*la + j] = -1.;
-      printf("ok");
-    }
-    printf("boucle j ok");
-  }
-
-  write_GB_operator_colMajor_poisson1D(ABbis, &la, &la, "ABbis.dat");
-
-  int m = 22;
-  int n = la + 1;
-
-  double* AA = (double*)malloc(sizeof(double)*m);
-  int* JA = (int*)malloc(sizeof(int)*m);
-  double* IA = (double*)malloc(sizeof(double)*n);
-  */
-
-  /* Stockage CSR 
-  set_CSR_operator_poisson1D(ABbis, &la, &la, AA, JA, IA);
-
-  write_vec(AA, &m, "AA_CSR.dat");
-  write_vec((double*)JA, &m, "JA_CSR.dat");
-  write_vec(IA, &n, "IA_CSR.dat");
-  */
-
-  /* Stockage CSC 
-  set_CSR_operator_poisson1D(ABbis, &la, &la, AA, JA, IA);
-
-  write_vec(AA, &m, "AA_CSC.dat");
-  write_vec((double*)JA, &m, "JA_CSC.dat");
-  write_vec(IA, &n, "IA_CSC.dat");
-
-  free(ABbis);
-  free(AA);
-  free(JA);
-  free(IA);
-  */
 
   free(RHS);
   free(EX_SOL);
