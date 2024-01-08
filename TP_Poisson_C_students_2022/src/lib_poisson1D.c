@@ -6,13 +6,15 @@
 #include "lib_poisson1D.h"
 
 void set_GB_operator_colMajor_poisson1D(double* AB, int *lab, int *la, int *kv){
-   for (int i = 0; i < *la; i++) {
+  int tmp;
+  for (int i = 0; i < *la; i++) {
+      tmp = i*(*lab);
       /* diagonale */
-      AB[(*kv) + 1 + i*(*lab)] = 2.0;
+      AB[(*kv) + 1 + tmp] = 2.0;
       /* sous-diagonale */
-      if (i != 0) AB[(*kv) + i*(*lab)] = -1.0;
+      if (i != 0) AB[(*kv) + tmp] = -1.0;
       /* sur-diagonale */
-      if (i != (*la) - 1) AB[(*kv) + 2 + i*(*lab)] = -1.0;
+      if (i != (*la) - 1) AB[(*kv) + 2 + tmp] = -1.0;
   }
 }
 
@@ -66,10 +68,17 @@ int dgbtrftridiag(int *la, int*n, int *kl, int *ku, double *AB, int *lab, int *i
   AB[(*kl) + 2] = AB[(*kl) + 2]/AB[(*kl) + 1];
   ipiv[0] = 1;
 
+  int tmp;
+
   for (int i = 1; i < *la; i++) {
-    AB[(*kl) + 1 + i*(*lab)] = AB[(*kl) + 1 + i*(*lab)] - AB[(*kl) + i*(*lab)]*AB[(*kl) + 2 + (i-1)*(*lab)] ;
-    if (i != (*la) - 1) AB[(*kl) + 2 + i*(*lab)] = AB[(*kl) + 2 + i*(*lab)] / AB[(*kl) + 1 + i*(*lab)];
-     ipiv[i] = i + 1;
+
+    tmp = i*(*lab);
+
+    AB[(*kl) + 1 + tmp] = AB[(*kl) + 1 + tmp] - AB[(*kl) + tmp]*AB[(*kl) + 2 + tmp - *lab] ;
+
+    if (i != (*la) - 1) AB[(*kl) + 2 + tmp] = AB[(*kl) + 2 + tmp] / AB[(*kl) + 1 + tmp];
+
+    ipiv[i] = i + 1;
   }
   *info = 0;
   return *info;
